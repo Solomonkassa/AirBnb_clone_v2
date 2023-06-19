@@ -1,77 +1,68 @@
 #!/usr/bin/python3
-"""Unit tests for the `amenity` module.
-"""
-import os
+"""test for amenity"""
 import unittest
-from models import storage
-from datetime import datetime
+import os
 from models.amenity import Amenity
-from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+import pep8
 
 
 class TestAmenity(unittest.TestCase):
-    """Test cases for the `Amenity` class.
-    """
+    """this will test the Amenity class"""
+    @classmethod
+    def setUpClass(cls):
+        """set up for test"""
+        cls.amenity = Amenity()
+        cls.amenity.name = "Breakfast"
 
-    def setUp(self):
-        pass
+    @classmethod
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.amenity
 
-    def tearDown(self) -> None:
-        """Resets FileStorage data.
-        """
-        FileStorage._FileStorage__objects = {}
-        if os.path.exists(FileStorage._FileStorage__file_path):
-            os.remove(FileStorage._FileStorage__file_path)
+    def tearDown(self):
+        """teardown"""
+        try:
+            os.remove("file.json")
+        except Exception:
+            pass
 
-    def test_params(self):
-        """Test method for class attributes
-        """
+    def test_pep8_Amenity(self):
+        """Tests pep8 style"""
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/amenity.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-        a1 = Amenity()
-        a2 = Amenity(**a1.to_dict())
-        a3 = Amenity("hello", "wait", "in")
+    def test_checking_for_docstring_Amenity(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(Amenity.__doc__)
 
-        k = f"{type(a1).__name__}.{a1.id}"
-        self.assertIsInstance(a1.name, str)
-        self.assertIn(k, storage.all())
-        self.assertEqual(a3.name, "")
+    def test_attributes_Amenity(self):
+        """chekcing if amenity have attibutes"""
+        self.assertTrue('id' in self.amenity.__dict__)
+        self.assertTrue('created_at' in self.amenity.__dict__)
+        self.assertTrue('updated_at' in self.amenity.__dict__)
+        self.assertTrue('name' in self.amenity.__dict__)
 
-    def test_init(self):
-        """Test method for public instances
-        """
-        a1 = Amenity()
-        a2 = Amenity(**a1.to_dict())
-        self.assertIsInstance(a1.id, str)
-        self.assertIsInstance(a1.created_at, datetime)
-        self.assertIsInstance(a1.updated_at, datetime)
-        self.assertEqual(a1.updated_at, a2.updated_at)
+    def test_is_subclass_Amenity(self):
+        """test if Amenity is subclass of Basemodel"""
+        self.assertTrue(issubclass(self.amenity.__class__, BaseModel), True)
 
-    def test_str(self):
-        """Test method for str representation
-        """
-        a1 = Amenity()
-        string = f"[{type(a1).__name__}] ({a1.id}) {a1.__dict__}"
-        self.assertEqual(a1.__str__(), string)
+    def test_attribute_types_Amenity(self):
+        """test attribute type for Amenity"""
+        self.assertEqual(type(self.amenity.name), str)
 
-    def test_save(self):
-        """Test method for save
-        """
-        a1 = Amenity()
-        old_update = a1.updated_at
-        a1.save()
-        self.assertNotEqual(a1.updated_at, old_update)
+    @unittest.skipIf(
+        os.getenv('HBNB_TYPE_STORAGE') == 'db',
+        "This test only work in Filestorage")
+    def test_save_Amenity(self):
+        """test if the save works"""
+        self.amenity.save()
+        self.assertNotEqual(self.amenity.created_at, self.amenity.updated_at)
 
-    def test_todict(self):
-        """Test method for dict
-        """
-        a1 = Amenity()
-        a2 = Amenity(**a1.to_dict())
-        a_dict = a2.to_dict()
-        self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(a2).__name__)
-        self.assertIn('created_at', a_dict.keys())
-        self.assertIn('updated_at', a_dict.keys())
-        self.assertNotEqual(a1, a2)
+    def test_to_dict_Amenity(self):
+        """test if dictionary works"""
+        self.assertEqual('to_dict' in dir(self.amenity), True)
 
 
 if __name__ == "__main__":

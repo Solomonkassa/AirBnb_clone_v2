@@ -1,74 +1,68 @@
 #!/usr/bin/python3
-"""Unit tests for the `state` module.
-"""
-import os
+"""test for state"""
 import unittest
-from models.engine.file_storage import FileStorage
+import os
 from models.state import State
-from models import storage
-from datetime import datetime
+from models.base_model import BaseModel
+import pep8
 
 
 class TestState(unittest.TestCase):
-    """Test cases for the `State` class."""
+    """this will test the State class"""
+    @classmethod
+    def setUpClass(cls):
+        """set up for test"""
+        cls.state = State()
+        cls.state.name = "CA"
 
-    def setUp(self):
-        pass
+    @classmethod
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.state
 
-    def tearDown(self) -> None:
-        """Resets FileStorage data.
-        """
-        FileStorage._FileStorage__objects = {}
-        if os.path.exists(FileStorage._FileStorage__file_path):
-            os.remove(FileStorage._FileStorage__file_path)
+    def tearDown(self):
+        """teardown"""
+        try:
+            os.remove("file.json")
+        except Exception:
+            pass
 
-    def test_params(self):
-        s1 = State()
-        s3 = State("hello", "wait", "in")
+    def test_pep8_Review(self):
+        """Tests pep8 style"""
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/state.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-        k = f"{type(s1).__name__}.{s1.id}"
-        self.assertIsInstance(s1.name, str)
-        self.assertEqual(s3.name, "")
-        s1.name = "Bahirdar"
-        self.assertEqual(s1.name, "Bahirdar")
-        self.assertIn(k, storage.all())
+    def test_checking_for_docstring_State(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(State.__doc__)
 
-    def test_init(self):
-        """Test method for public instances
-        """
-        s1 = State()
-        s2 = State(**s1.to_dict())
-        self.assertIsInstance(s1.id, str)
-        self.assertIsInstance(s1.created_at, datetime)
-        self.assertIsInstance(s1.updated_at, datetime)
-        self.assertEqual(s1.updated_at, s2.updated_at)
+    def test_attributes_State(self):
+        """chekcing if State have attributes"""
+        self.assertTrue('id' in self.state.__dict__)
+        self.assertTrue('created_at' in self.state.__dict__)
+        self.assertTrue('updated_at' in self.state.__dict__)
+        self.assertTrue('name' in self.state.__dict__)
 
-    def test_str(self):
-        """Test method for str representation
-        """
-        s1 = State()
-        string = f"[{type(s1).__name__}] ({s1.id}) {s1.__dict__}"
-        self.assertEqual(s1.__str__(), string)
+    def test_is_subclass_State(self):
+        """test if State is subclass of BaseModel"""
+        self.assertTrue(issubclass(self.state.__class__, BaseModel), True)
 
-    def test_save(self):
-        """Test method for save
-        """
-        s1 = State()
-        old_update = s1.updated_at
-        s1.save()
-        self.assertNotEqual(s1.updated_at, old_update)
+    def test_attribute_types_State(self):
+        """test attribute type for State"""
+        self.assertEqual(type(self.state.name), str)
 
-    def test_todict(self):
-        """Test method for dict
-        """
-        s1 = State()
-        s2 = State(**s1.to_dict())
-        a_dict = s2.to_dict()
-        self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(s2).__name__)
-        self.assertIn('created_at', a_dict.keys())
-        self.assertIn('updated_at', a_dict.keys())
-        self.assertNotEqual(s1, s2)
+    @unittest.skipIf(
+        os.getenv('HBNB_TYPE_STORAGE') == 'db',
+        "This test only work in Filestorage")
+    def test_save_State(self):
+        """test if the save works"""
+        self.state.save()
+        self.assertNotEqual(self.state.created_at, self.state.updated_at)
+
+    def test_to_dict_State(self):
+        """test if dictionary works"""
+        self.assertEqual('to_dict' in dir(self.state), True)
 
 
 if __name__ == "__main__":

@@ -1,75 +1,84 @@
 #!/usr/bin/python3
-"""
-This module defines a class to manage file storage for hbnb clone.
-Module: file_storage.py
-Defines a `FileStorage` class.
-"""
-import os
+"""This is the file storage class for AirBnB"""
 import json
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
 from models.city import City
-from models.review import Review
 from models.amenity import Amenity
 from models.place import Place
+from models.review import Review
 
 
-class FileStorage():
+class FileStorage:
+    """This class serializes instances to a JSON file and
+    deserializes JSON file to instances
+    Attributes:
+        __file_path: path to the JSON file
+        __objects: objects will be stored
     """
-    serializes instances to a JSON file and
-    deserializes JSON file to instances.
-    __file_path: path to the JSON file.
-    __objects: objects will be stored.
-    """
-
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
+        """Returns all the objects
+
+        If a class is specified, the method only
+        returns the objects of same type.
+
         """
-        returns the dictionary __objects.
-        """
-        return FileStorage.__objects
+
+        if cls:
+            same_type = dict()
+
+            for key, obj in self.__objects.items():
+                if obj.__class__ == cls:
+                    same_type[key] = obj
+
+            return same_type
+
+        return self.__objects
 
     def new(self, obj):
+        """sets __object to given obj
+        Args:
+            obj: given object
         """
-        sets in __objects the obj with key <obj class name>.id
-        """
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.__objects[key] = obj
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
+        """serialize the file path to JSON file path
         """
-        serializes __objects to the JSON file (path: __file_path).
-        """
-        with open(FileStorage.__file_path, 'w') as f:
-            json.dump(
-                {k: v.to_dict() for k, v in FileStorage.__objects.items()}, f)
+        my_dict = {}
+        for key, value in self.__objects.items():
+            my_dict[key] = value.to_dict()
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+            json.dump(my_dict, f)
 
     def reload(self):
+        """serialize the file path to JSON file path
         """
-        deserializes the JSON file to __objects only if the JSON
-        file exists; otherwise, does nothing.
+        try:
+            with open(self.__file_path, 'r', encoding="UTF-8") as f:
+                for key, value in (json.load(f)).items():
+                    value = eval(value["__class__"])(**value)
+                    self.__objects[key] = value
+        except FileNotFoundError:
+            pass
+
+    def delete(self, obj=None):
+        """Delete obj from __objects if it's inside
         """
-        current_classes = {'BaseModel': BaseModel, 'User': User,
-                           'Amenity': Amenity, 'City': City, 'State': State,
-                           'Place': Place, 'Review': Review}
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
 
-        if not os.path.exists(FileStorage.__file_path):
-            return
+            if self.__objects[key]:
+                del self.__objects[key]
+                self.save()
 
-        with open(FileStorage.__file_path, 'r') as f:
-            deserialized = None
-
-            try:
-                deserialized = json.load(f)
-            except json.JSONDecodeError:
-                pass
-
-            if deserialized is None:
-                return
-
-            FileStorage.__objects = {
-                k: current_classes[k.split('.')[0]](**v)
-                for k, v in deserialized.items()}
+    def close(self):
+        """Deserialize the JSON file to objects
+        """
+        self.reload()

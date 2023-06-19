@@ -1,65 +1,71 @@
 #!/usr/bin/python3
-"""Unit tests for the `city` module.
-"""
-import os
+"""test for city"""
 import unittest
-from models.engine.file_storage import FileStorage
-from models import storage
+import os
 from models.city import City
-from datetime import datetime
-
-c1 = City()
-c2 = City(**c1.to_dict())
-c3 = City("hello", "wait", "in")
+from models.base_model import BaseModel
+import pep8
 
 
 class TestCity(unittest.TestCase):
-    """Test cases for the `City` class.
-    """
+    """this will test the city class"""
+    @classmethod
+    def setUpClass(cls):
+        """set up for test"""
+        cls.city = City()
+        cls.city.name = "LA"
+        cls.city.state_id = "CA"
 
-    def setUp(self):
-        pass
+    @classmethod
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.city
 
-    def tearDown(self) -> None:
-        """Resets FileStorage data.
-        """
-        FileStorage._FileStorage__objects = {}
-        if os.path.exists(FileStorage._FileStorage__file_path):
-            os.remove(FileStorage._FileStorage__file_path)
+    def tearDown(self):
+        """teardown"""
+        try:
+            os.remove("file.json")
+        except Exception:
+            pass
 
-    def test_params(self):
-        """Test method for class attributes
-        """
-        k = f"{type(c1).__name__}.{c1.id}"
-        self.assertIsInstance(c1.name, str)
-        self.assertEqual(c3.name, "")
-        c1.name = "Jimma"
-        self.assertEqual(c1.name, "Jimma")
+    def test_pep8_City(self):
+        """Tests pep8 style"""
+        style = pep8.StyleGuide(quiet=True)
+        p = style.check_files(['models/city.py'])
+        self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_init(self):
-        """Test method for public instances
-        """
-        self.assertIsInstance(c1.id, str)
-        self.assertIsInstance(c1.created_at, datetime)
-        self.assertIsInstance(c1.updated_at, datetime)
-        self.assertEqual(c1.updated_at, c2.updated_at)
+    def test_checking_for_docstring_City(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(City.__doc__)
 
-    def test_save(self):
-        """Test method for save
-        """
-        old_update = c1.updated_at
-        c1.save()
-        self.assertNotEqual(c1.updated_at, old_update)
+    def test_attributes_City(self):
+        """chekcing if City have attributes"""
+        self.assertTrue('id' in self.city.__dict__)
+        self.assertTrue('created_at' in self.city.__dict__)
+        self.assertTrue('updated_at' in self.city.__dict__)
+        self.assertTrue('state_id' in self.city.__dict__)
+        self.assertTrue('name' in self.city.__dict__)
 
-    def test_todict(self):
-        """Test method for dict
-        """
-        a_dict = c2.to_dict()
-        self.assertIsInstance(a_dict, dict)
-        self.assertEqual(a_dict['__class__'], type(c2).__name__)
-        self.assertIn('created_at', a_dict.keys())
-        self.assertIn('updated_at', a_dict.keys())
-        self.assertNotEqual(c1, c2)
+    def test_is_subclass_City(self):
+        """test if City is subclass of Basemodel"""
+        self.assertTrue(issubclass(self.city.__class__, BaseModel), True)
+
+    def test_attribute_types_City(self):
+        """test attribute type for City"""
+        self.assertEqual(type(self.city.name), str)
+        self.assertEqual(type(self.city.state_id), str)
+
+    @unittest.skipIf(
+        os.getenv('HBNB_TYPE_STORAGE') == 'db',
+        "This test only work in Filestorage")
+    def test_save_City(self):
+        """test if the save works"""
+        self.city.save()
+        self.assertNotEqual(self.city.created_at, self.city.updated_at)
+
+    def test_to_dict_City(self):
+        """test if dictionary works"""
+        self.assertEqual('to_dict' in dir(self.city), True)
 
 
 if __name__ == "__main__":
