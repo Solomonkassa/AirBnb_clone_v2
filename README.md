@@ -48,7 +48,7 @@ This is an open-source project, and contributions are welcome! If you'd like to 
 ### Contributors
 
 - [Solomon Kassa](https://github.com/Solomonkassa/)
-- [Hiwot Zeleke](https://github.com/Hiwotzeleke/)
+- [Hiwot Zeleke](https://github.com/BHiwot)
 
 ## License
 
