@@ -1,23 +1,25 @@
+# Airbnb Clone_v2 Project
+
 ![logo](https://github.com/Solomonkassa/Solomonkassa/blob/main/hbnb.png)
 
-# Airbnb Console Project.
 ------------------------------------------------------------------------------------------------------------------------------
-This Airbnb Console Project is a command-line interface tool that allows user to interact with an AirBnB-like database from the comfort of their terminal. It was developed using Python, and includes features like data manipulation, searching, filtering, and more.
+This Airbnb Console Project is a command-line interface tool that allows users to interact with an AirBnB-like database from the comfort of their terminal. It was developed using Python and includes features like data manipulation, searching, filtering, and more.
 
 ## Getting Started
 
-To get started with this project, you'll need to have Python3 installed on your system. You can download the latest version of Python from the official website. Once you have Python installed, you can clone the repository and install the necessary dependencies using pip:
+To get started with this project, you'll need to have Python 3 installed on your system. You can download the latest version of Python from the official website. Additionally, you'll need to set up a MySQL database. Follow these steps to set up the project:
 
-```
-git clone https://github.com/solomonkassa/AirBnB_clone.git
-cd AirBnB_clone
-pip install -r requirements.txt
-```
+1. Clone the repository:
+
+2. Install the necessary dependencies using pip:
+
+3. Set up a MySQL database and update the configuration:
+    - Create a new MySQL database for the project.
+    - Update the `models/engine/db_storage.py` file with your database connection details (host, user, password, database).
 
 ## Usage
 
 To use the Airbnb Console, simply run the `console.py` file:
-
 
 This will start the console, and you'll be presented with a prompt where you can enter commands to interact with the database. Here are some of the available commands:
 
@@ -31,15 +33,12 @@ For a full list of available commands, you can type `help` at the prompt.
 
 ## Data Persistence
 
-The Airbnb Console uses a JSON file to persist data between sessions. The default file name is `file.json`, but you can specify a different file name by setting the `HBNB_ENV` environment variable to the name of the file you want to use.
+The Airbnb Console uses a MySQL database as the engine for data persistence. The connection details are provided in the `models/engine/db_storage.py` file. When running the console, the data will be stored and retrieved from the MySQL database.
 
 ## Tests
 
 This project includes a suite of tests to ensure that everything is working as expected. To run the tests, simply run the `test_console.py` file:
 
-```
-python -m unittest discover tests
-```
 
 ## Contributing
 
