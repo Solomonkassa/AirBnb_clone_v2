@@ -1,5 +1,5 @@
-#!/usr/bin/python3
-"""This is the DB storage class for AirBnB"""
+#!/usr/bin/Python3
+"""This module defines the engine for the MySQL database"""
 from models.base_model import BaseModel, Base
 from models.user import User
 from models.state import State
@@ -7,97 +7,68 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from os import getenv
-from sqlalchemy import create_engine
+from sqlalchemy import (create_engine)
 from sqlalchemy.orm import sessionmaker, scoped_session
+import os
 
-all_classes = {"State", "City", "Amenity", "User", "Place", "Review"}
+
+user = os.getenv('HBNB_MYSQL_USER')
+pwd = os.getenv('HBNB_MYSQL_PWD')
+host = os.getenv('HBNB_MYSQL_HOST')
+db = os.getenv('HBNB_MYSQL_DB')
+env = os.getenv('HBNB_ENV')
 
 
 class DBStorage:
-    """...
+    """Defining the class DBStorage"""
 
-    Attributes:
-        __engine: The SQLAlchemy engine
-        __session: The SQLAlchemy session
-
-    """
-
+    __classes = [State, City, User, Place, Review, Amenity]
     __engine = None
     __session = None
 
     def __init__(self):
-        """Initialize a connection with MySQL
-        and create tables
-        """
-
-        db_uri = "{0}+{1}://{2}:{3}@{4}:3306/{5}".format(
-            'mysql', 'mysqldb', getenv('HBNB_MYSQL_USER'),
-            getenv('HBNB_MYSQL_PWD'), getenv('HBNB_MYSQL_HOST'),
-            getenv('HBNB_MYSQL_DB'))
-
-        self.__engine = create_engine(db_uri, pool_pre_ping=True)
-        self.reload()
-
-        if getenv('HBNB_ENV') == 'test':
-            Base.metadata.drop_all(self.__engine)
+        """Contructor for the class DBStorage"""
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            user, pwd, host, db), pool_pre_ping=True)
+    if env == "test":
+        Base.MetaData.drop_all()
 
     def all(self, cls=None):
-        """...
-        """
-        entities = dict()
-
-        if cls:
-            return self.get_data_from_table(cls, entities)
-
-        for entity in all_classes:
-            entities = self.get_data_from_table(eval(entity), entities)
-
-        return entities
+        """Method to return a dictionary of objects"""
+        my_dict = {}
+        if cls in self.__classes:
+            result = DBStorage.__session.query(cls)
+            for row in result:
+                key = "{}.{}".format(row.__class__.__name__, row.id)
+                my_dict[key] = row
+        elif cls is None:
+            for cl in self.__classes:
+                result = DBStorage.__session.query(cl)
+                for row in result:
+                    key = "{}.{}".format(row.__class__.__name__, row.id)
+                    my_dict[key] = row
+        return my_dict
 
     def new(self, obj):
-        """Add obj to the current database session.
-        """
-        if obj:
-            self.__session.add(obj)
+        """Method to add a new object to the current database"""
+        DBStorage.__session.add(obj)
 
     def save(self):
-        """Commit all changes to the current database session.
-        """
-
-        self.__session.commit()
+        """Method to commit all changes to the current database"""
+        DBStorage.__session.commit()
 
     def delete(self, obj=None):
-        """Delete obj from the current database session.
-        """
-
-        if obj is not None:
-            self.__session.delete(obj)
+        """Method to delete a new object to the current database"""
+        DBStorage.__session.delete(obj)
 
     def reload(self):
-        """Create all tables into database and initialize a new session.
-        """
-
+        """Method to create the current database session"""
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
-        self.__session = Session()
-
-    def get_data_from_table(self, cls, structure):
-        """Get the data from a MySQL Table
-        """
-
-        if type(structure) is dict:
-            query = self.__session.query(cls)
-
-            for _row in query.all():
-                key = "{}.{}".format(cls.__name__, _row.id)
-                structure[key] = _row
-
-            return structure
+        DBStorage.__session = Session()
 
     def close(self):
-        """Close the Session
-        """
-        self.__session.close()
+        """public methodto to call remove method"""
+        DBStorage.__session.close()
