@@ -1,372 +1,187 @@
-<h1 align="center">HolbertonBnB</h1>
-<p align="center">An AirBnB clone.</p>
+# AirBnB_clone_v2: MySQL, deploy web static, web framework
 
-<p align="center">
-  <img src="https://github.com/bdbaraban/AirBnB_clone_v2/blob/master/assets/hbnb_logo.png"
-	    alt="HolbertonBnB logo">
-</p>
+![hbnb](https://camo.githubusercontent.com/a0c52a69dc410e983b8c63fa4aa57e83cb4157cd/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f696e7472616e65742d70726f6a656374732d66696c65732f686f6c626572746f6e7363686f6f6c2d6869676865722d6c6576656c5f70726f6772616d6d696e672b2f3236332f4842544e2d68626e622d46696e616c2e706e67)
 
-## Description :house:
+## Table of Contents
 
-HolbertonBnB is a complete RESTful web application, integrating file and
-database (MySQL) storage in a back-end API with front-end interfacing in a
-clone of AirBnB. The front-end is designed using HTML5/CSS3 and is served using
-Python Flask. The application is configured on a distributed system - two web
-servers and one load balancer - with Nginx and HAProxy.
+* [Description](#description)
+* [Purpose](#purpose)
+* [Requirements](#requirements)
+* [File Descriptions](#file-descriptions)
+* [Environmental Variables](#environmental-variables)
+* [Usage](#usage)
+* [Bugs](#bugs)
+* [Authors](#authors)
+* [License](#license)
 
-HolbertonBnB is still in active development, with complete functionality set to
-deploy in the coming month:
+## Description
 
-* Complete integration of a RESTful API
-* Full configuration of website with domain name
-* Serving of dynamic content using JavaScript
+**hbnb** is a full-stack clone of the web application [AirBnB](https://www.airbnb.com/). This clone was built in four iterative phases. This version includes completion of Phase 1 from [AirBnB_clone_v1: Console and web static](https://github.com/bchen528/AirBnB_clone_v1) plus Phase 2, which has three parts: 1) adding a MySQL database storage system and mapping models to a database table using object relational mapping, 2) deploying web static by creating and configuring a web server using Fabric, and 3) converting static HTML page into a dynamic HTML page using Flask and Jinja2.
 
-<p align="center">
-  <img src="https://github.com/bdbaraban/AirBnB_clone_v2/blob/master/assets/hbnb_stack.png"
-	    alt="HolbertonBnB stack">
-</p>
+### Part 1: Add a MySQL database storage system
+![mysql_diagram](https://s3.amazonaws.com/intranet-projects-files/concepts/74/hbnb_step2.png)
 
----
+### Part 2: Deploy web static with Fabric
+![web_static_deployment](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/288/aribnb_diagram_0.jpg?cache=off)
 
-## NOTE TO 2019 LYFT SOFTWARE ENGINEERING APPRENTICESHIP RECRUITER
+### Part 3: Build a web framework with Flask
+![webframwork](https://s3.amazonaws.com/intranet-projects-files/concepts/74/hbnb_step3.png)
 
-This web app has been the capstone project of my full-stack education at
-Holberton School and I want to show it off as a demonstration of all the
-skills I've learned at this school.
+**Links to other versions:**
+* [AirBnB_clone_v1: Console and web static](https://github.com/bchen528/AirBnB_clone_v1)
+* [AirBnB_clone_v3: RESTful API](https://github.com/bchen528/AirBnB_clone_v3)
+* [AirBnB_clone_v4: Web dynamic](https://github.com/bchen528/AirBnB_clone_v4) (Final version!)
 
-With that said, I must clarify that it is not complete. As mentioned, the
-clone is a work-in-progress, with full deployment as a RESTful API still to
-come. Finishing touches will be occurring over the next month, my final at
-Holberton.
+## Purpose
+The purpose of Phase 2 is to learn how to:
+* create a MySQL database
+* use ORM
+* map a Python class to a MySQL table
+* handle 2 different storage engines in same codebase
+* use environmental variables
+* deploy code on a server
+* use Fabric for executing local or remote shell commands, uploading/downloading files, prompting the running user for input, or aborting execution. Fabric is taking care of all network connections (SSH, SCP etc.): it's an easy tool for transferring files and executing commands from local to a remote server.
+* manage Nginx configurations
+* build a web framework with Flask
+* define routes in Flask
+* create HTML response in Flask using a template
+* create dynamic template with Jinja2
+* display data from MySQL database in HTML
 
-Recognizing that I am sharing a near-complete project, I additionally put
-together a small Flask app according to the specifications described in the
-application. Please take a look at this separate repository here:
+## Requirements
+* All files compiled with Ubuntu 14.04 LTS
+* Documentation
+* Organized files in proper folders (i.e. CSS files should be in `styles` folder)
+* Python unit tests for all files
+* Use SQLAlchemy 1.2.x and MySQL 5.7
+* All files must be pep8 and shellcheck compliant
 
-https://github.com/bdbaraban/lyft_apprenticeship_application
+## File Descriptions
+  **Note:** Below highlights only new file additions for Phase 2. For Phase 1 file descriptions, click [here](https://github.com/bchen528/AirBnB_clone_v1).
+  * [console.py](console.py) - command interpreter from Phase 1 that includes updated `do_create` function that allows object creation with given arameters with syntax `<key name>=<value>`
+  * [setup_mysql_dev.sql](setup_mysql_dev.sql) - script that prepares a MySQL development server for the project
+  * [setup_mysql_test.sql](setup_mysql_test.sql) - script that prepares a MySQL test server for the project
+  * [0-setup_web_static.sh](0-setup_web_static.sh) - Bash script that sets up web servers for `web_static` deployment
+  * [1-pack_web_static.py](1-pack_web_static.py) - a Fabric script that generates a .tgz archive from the contents of the `web_static` folder
+    * `do_pack` - generates a .tgz archive from the contents of the `web_static` folder using Fabric
+  * [2-do_deploy_web_static.py](2-do_deploy_web_static.py) - a Fabric script (based on 1-pack_web_static.py) that distributes an archive to web servers
+    * `do_deploy` - distributes an archive to web servers
+    * `do_pack` - generates a .tgz archive from the contents of the `web_static` folder using Fabric
+  * [3-deploy_web_static.py](3-deploy_web_static.py) - a Fabric script (based on 2-do_deploy_web_static.py) that creates and distributes an archive to my web servers 
+    * `deploy` - creates and distributes an archive to web servers
+    * `do_deploy` - distributes an archive to web servers
+    * `do_pack` - generates a .tgz archive from the contents of the `web_static` folder using Fabric
+  * [models](models) - contains models for relevant AirBnB objects
+    * [`__init__.py`](models/__init__.py) - switch to file storage or database storage modes
+    * [base_model.py](models/base_model.py) - class BaseModel, parent class that will take care of initialization/serialization/deserialization of future instances
+      * `__init__` - initialize instance attributes
+      * `__str__` - returns formatted string representation of instance
+      * `__repr__` - returns string representation of instance
+      * save - updates `updated_at` attribute for new instance
+      * to_dict - returns dictionary representation a BaseModel object
+    * [user.py](models/user.py) - class User
+    * [city.py](models/city.py) - class City
+    * [state.py](models/state.py) - class State
+    * [place.py](models/place.py) - class Place
+      * `reviews` - get list of Review instances with place_id (equals current Place.id)
+      * `amenities` getter - returns list of Amenity instances based on the attribute amenity_ids that contains all Amenity.id linked to the Place
+      * `amenities` setter - adds an Amenity.id to attribute amenity_ids if obj is an instance of Amenity
+    * [review.py](models/review.py) - class Review
+    * [amenity.py](models/amenity.py) - class Amenity
+  * [tests](/tests/) - unit test files
+  * [engine](models/engine) - contains storage engines
+    * [`__init__.py`](/models/engine/__init__.py) - empty `__init__.py` file for packages
+    * [file_storage.py](/models/engine/file_storage.py) - class FileStorage; serializes instances to JSON file and deserializes from a JSON file
+      * `all` - returns the dictionary `__objects`
+      * `new` - sets in `__objects` the obj with key `<obj class name>.id`
+      * `save` - serializes `__objects` to the JSON file (path: `__file_path`)
+      * `reload` - deserializes the JSON file to `__objects`
+      * `delete` - delete object from `__objects` if exists
+      * `close` - call reload
+    * [db_storage.py](/models/engine/db_storage.py) - class DBStorage; 
+      * `__init__` - initalize instances
+      * `all` - return dictionary of instance attributes
+      * `new` - add new object to current database session
+      * `save` - commit all changes of the current database session
+      * `delete` - delete from the current database session obj if not None
+      * `reload` - create all tables in database and current database session
+      * `close` - close session
+* [web_flask](web_flask) - contains Flask, templates, and static files
+  * [`__init__.py`](web_flask/__init__.py) - import Flask and create a Flask instance
+  * [0-hello_route.py](web_flask/0-hello_route.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB!'
+  * [1-hbnb_route.py](web_flask/1-hbnb_route.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB~' and route `/hbnb` displays 'HBNB'
+  * [2-c_route.py](web_flask/2-c_route.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB!', `/hbnb` displays 'HBNB', `/c/<text>` displays 'C' followed by the value of the text variable (replace underscore `_` symbols with a space ` `
+  * [3-python_route.py](web_flask/3-python_route.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB!', `/hbnb` displays 'HBNB', `/c/<text>` displays 'C' followed by the value of the text variable (replace underscore `_` symbols with a space ` `, `/python/(<text>)` displays 'Python ', followed by the value of the text variable (replace underscore `_` symbols with a space ` `) where the default value of `text` is 'is cool'
+  * [4-number_route.py](web_flask/4-number_route.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB!', `/hbnb` displays 'HBNB', `/c/<text>` displays 'C' followed by the value of the text variable (replace underscore `_` symbols with a space ` `, `/python/(<text>)` displays 'Python ', followed by the value of the text variable (replace underscore `_` symbols with a space ` `) where the default value of `text` is 'is cool', `/number/<n>` displays '`n` is a number' only if n is an integer
+  * [5-number_template.py](web_flask/5-number_template.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB!', `/hbnb` displays 'HBNB', `/c/<text>` displays 'C' followed by the value of the text variable (replace underscore `_` symbols with a space ` `, `/python/(<text>)` displays 'Python ', followed by the value of the text variable (replace underscore `_` symbols with a space ` `) where the default value of `text` is 'is cool', `/number/<n>` displays '`n` is a number' only if n is an integer, `/number_template/<n>` displays an HTML page only if `n` is an integer
+  * [6-number_odd_or_even.py](web_flask/6-number_odd_or_even.py) - script that starts a Flask web application where route `/` displays 'Hello HBNB!', `/hbnb` displays 'HBNB', `/c/<text>` displays 'C' followed by the value of the text variable (replace underscore `_` symbols with a space ` `, `/python/(<text>)` displays 'Python ', followed by the value of the text variable (replace underscore `_` symbols with a space ` `) where the default value of `text` is 'is cool', `/number/<n>` displays '`n` is a number' only if n is an integer, `/number_template/<n>` displays an HTML page only if `n` is an integer, `/number_odd_or_even/<n>` displays an HTML page only if `n` is an integer where `H1` tag includes 'Number: `n` is `even|odd`' in `BODY` tag
+  * [7-states_list.py](web_flask/7-states_list.py) - script that starts a Flask web application where route `/states_list` displays an HTML page with `H1` tag: “States”, `UL` tag: list of all State objects present in DBStorage sorted by name (A->Z), `LI` tag: description of one `State: <state.id>: <B><state.name></B>`
+  * [8-cities_by_states.py](web_flask/8-cities_by_states.py) - script that starts a Flask web application where route `/cities_by_states` displays an HTML page with `H1` tag: “States”, `UL` tag: list of all State objects present in DBStorage sorted by name (A->Z), `LI` tag: description of one `State: <state.id>: <B><state.name></B>`, `LI` tag: description of one `City: <city.id>: <B><city.name></B>`
+  * [9-states.py](web_flask/9-states.py) - script that starts a Flask web application where route `/states` displays an HTML page with `H1` tag: “States”, `UL` tag: list of all State objects present in DBStorage sorted by name (A->Z), `LI` tag: description of one `State: <state.id>: <B><state.name></B>`; route `/states/<id>`displays an HTML page where if a State object is found with this id: `H1` tag: “State: ”, `H3` tag: “Cities:”, `UL` tag: with the list of City objects linked to the State sorted by name (A->Z), `LI` tag: description of one `City: <city.id>: <B><city.name></B>`; Otherwise: `H1` tag: “Not found!”
+  * [10-hbnb_filters.py](web_flask/10-hbnb_filters.py) - script that starts a Flask web application and defines route `/hbnb_filters` to display an HTML page like below:
+  ![6-index.html_part0](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/10-hbnb_filters_0.jpg)
+  ![6-index.html_part1](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/10-hbnb_filters_1.jpg)
+  ![6-index.html_part2](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/10-hbnb_filters_2.jpg)
+  ![6-index.html_part3](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/10-hbnb_filters_3.jpg)
+  * [100-hbnb.py](web_flask/100-hbnb.py) - script that starts a Flask web application and route `/hbnb` displays an HTML page like below:
+  ![8-index.html_part0](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb_0.jpg)
+  ![8-index.html_part1](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb_1.jpg)
+  ![8-index.html_part2](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb_2.jpg)
+  ![8-index.html_part3](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb_3.jpg)
+  ![8-index.html_part4](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb_4.jpg)
+  * [templates](web_flask/templates) - contains HTML files
+    * [5-number.html](web_flask/templates/5-number.html) - number template
+    * [6-number_odd_or_even.html](web_flask/templates/6-number_odd_or_even.html) - even/odd template
+    * [7-states_list.html](web_flask/templates/7-states_list.html) - list of states template
+    * [8-cities_by_states.html](web_flask/templates/8-cities_by_states.html) - list of cities by states template
+    * [9-states.html](web_flask/templates/9-states.html) - list of states by id template
+    * [10-hbnb_filters.html](web_flask/templates/10-hbnb_filters.html) - filters template
+    * [100-hbnb.html](web_flask/templates/100-hbnb.html) - advanced filters template
+  * [static](web_flask/static) - contains CSS and image files
+    * [styles](web_flask/static/styles) - contains CSS files
+      * [3-header.css](web_flask/static/styles/3-header.css) - header styles
+      * [3-footer.css](web_flask/static/styles/3-footer.css) - footer styles
+      * [4-common.css](web_flask/static/styles/4-common.css) - body styles
+      * [6-filters.css](web_flask/static/styles/6-filters.css) - filter styles
+      * [8-places.css](web_flask/static/styles/8-places.css) - places styles
 
-Nonetheless, allow me to talk a little more about this AirBnB clone. This
-repository is the second iteration of the project. In the first version
-(viewable [here](https://github.com/bdbaraban/AirBnB_clone)), I, together
-with a cohort mate, built up the initial file storage back-end and
-console from scratch. We pair programmed for most all of this version one work.
-
-In this second iteration of the project, I, together with a new partner,
-inherited a different version of the same back-end written by a pair of
-Holberton students from an older cohort. We then pair programmed
-to build up the database storage engine of the back-end.
-
-In between each version, I put together an entire CSS-styled HTML web page
-for the project. This front-end development was coded independently, although
-the HTML files I personally wrote are only posted in
-[version one](https://github.com/bdbaraban/AirBnB_clone) (the
-[web_static](./web_static) folder in this directory was included in the
-fork). Addtionally, all Shell, Puppet, and Fabric deployment scripts/manifests
-were coded myself.
-
-The README's in both repositories were almost exclusively written myself.
-
-I hope this helps clear things up. I apologize for the confusing versioning, but
-the takeaway is that I've been directly involved in coding at least _an_ implementation
-of everything in this repository. And hey, software development is no fun without
-some confusing version control, right? :sweat_smile: :sob:
-
-Please let me know if you have any questions!
-
----
-
-### Static :page_facing_up:
-
-The front-end of HolbertonBnB was designed from scratch using HTML5/CSS3 pages
-integrated using Flask. While the front-end has not yet been officially deployed,
-screenshots are viewable in the README of the [web_flask](./web_flask) directory.
-
-### Classes :cl:
-
-HolbertonBnB supports the following classes:
-
-* BaseModel
-* User
-* State
-* City
-* Amenity
-* Place
-* Review
-
-## Storage :baggage_claim:
-
-The above classes are handled by one of either two abstracted storage engines,
-depending on the call - [FileStorage](./models/engine/file_storage.py) or
-[DBStorage](./models/engine/db_storage.py).
-
-### FileStorage
-
-The default mode.
-
-In `FileStorage` mode, every time the backend is initialized, HolbertonBnB
-instantiates an instance of `FileStorage` called `storage`. The `storage`
-object is loaded/re-loaded from any class instances stored in the JSON file
-`file.json`. As class instances are created, updated, or deleted, the
-`storage` object is used to register corresponding changes in the `file.json`.
-
-### DBStorage
-
-Run by setting the environmental variables `HBNB_TYPE_STORAGE=db`.
-
-In `DBStorage` mode, every time the backend is initialized, HolbertonBnB
-instantiates an instance of `DBStorage` called `storage`. The `storage` object
-is loaded/re-loaded from the MySQL database specified in the environmental variable
-`HBNB_MYSQL_DB`, using the user `HBNB_MYSQL_USER`, password `HBNB_MYSQL_PWD`, and
-host `HBNB_MYSQL_HOST`. As class instances are created, updated, or deleted, the
-`storage` object is used to register changes in the corresponding MySQL database.
-Connection and querying is achieved using SQLAlchemy.
-
-Note that the databases specified for `DBStorage` to connect to must already be
-defined on the MySQL server. This repository includes scripts
-[setup_mysql_dev.sql](./setup_mysql_dev.sql) and [setup_mysql_test.sql](./setup_mysql_test.sql)
-to set up `hbnb_dev_db` and `hbnb_test_db` databases in a MySQL server,
-respectively.
-
-## Console :computer:
-
-The console is a command line interpreter that permits management of the backend
-of HolbertonBnB. It can be used to handle and manipulate all classes utilized by
-the application (achieved by calls on the `storage` object defined above).
-
-### Using the Console
-
-The HolbertonBnB console can be run both interactively and non-interactively.
-To run the console in non-interactive mode, pipe any command(s) into an execution
-of the file `console.py` at the command line.
-
+## Environmental Variables
 ```
-$ echo "help" | ./console.py
-(hbnb)
-Documented commands (type help <topic>):
-========================================
-EOF  all  count  create  destroy  help  quit  show  update
-
-(hbnb)
-$
-```
-
-Alternatively, to use the HolbertonBnB console in interactive mode, run the
-file `console.py` by itself:
-
-```
-$ ./console.py
+HBNB_ENV: running environment. It can be “dev” or “test” for the moment (“production” soon!)
+HBNB_MYSQL_USER: the username of your MySQL
+HBNB_MYSQL_PWD: the password of your MySQL
+HBNB_MYSQL_HOST: the hostname of your MySQL
+HBNB_MYSQL_DB: the database name of your MySQL
+HBNB_TYPE_STORAGE: the type of storage used. It can be “file” (using FileStorage) or db (using DBStorage)
 ```
 
-Remember, the console can be run with `storage` instantiated in either `FileStorage`
-or `DBStorage` mode. The above examples instantiate `FileStorage` by default, but
-`DBStorage` can be instantiated like so:
-
+## Usage
+Run the following in your terminal:
 ```
-$ HBNB_MYSQL_USER=hbnb_dev HBNB_MYSQL_PWD=hbnb_dev_pwd HBNB_MYSQL_HOST=localhost HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db ./console.py
+user@ubuntu:~/AirBnB_v2$ curl -o 100-dump.sql "https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb.sql"
+user@ubuntu:~/AirBnB_v2$ cat 100-dump.sql | mysql -uroot -p
+Enter password: 
+user@ubuntu:~/AirBnB_v2$ HBNB_MYSQL_USER=hbnb_dev HBNB_MYSQL_PWD=hbnb_dev_pwd HBNB_MYSQL_HOST=localhost HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db python3 -m web_flask.100-hbnb
+* Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+....
 ```
+Open up a web browser and type `0.0.0.0:5000/hbnb`.
+Voila! You should see a lovely webpage like below:
+  ![8-index.html_part0](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-higher-level_programming+/290/100-hbnb_0.jpg)
 
-The console functions identically regardless of the `storage` mode.
+## Bugs
 
-While running in interactive mode, the console displays a prompt for input:
+At this time, there are no known bugs.
 
-```
-$ ./console.py
-(hbnb)
-```
+## Authors
+Phase 2:
+* Becky Chen | [GitHub](https://github.com/bchen528) | [Twitter](https://twitter.com/bchen803)
+* Arik Rosenthal | [GitHub](https://github.com/aDENTinTIME) | [Twitter](https://twitter.com/adentintime)
 
-To quit the console, enter the command `quit`, or input an EOF signal
-(`ctrl-D`).
+Phase 1 codebase: (For practice working with new codebases)
+* Binita Rai | [Github](https://github.com/rayraib)
+* Steven Garcia | [Github](https://github.com/stvngrcia)
 
-```
-$ ./console.py
-(hbnb) quit
-$
-```
+## License
 
-```
-$ ./console.py
-(hbnb) EOF
-$
-```
-
-### Console Commands
-
-The HolbertonBnB console supports the following commands:
-
-#### create
-* Usage: `create <class> <param 1 name>=<param 1 value> <param 2 name>=<param 2 value> ...`
-
-Creates a new instance of a given class. The class' ID is printed and
-the instance is saved to the file `file.json`. When passing parameter key/value
-pairs, any underscores contained in value strings are replaced by spaces.
-
-```
-$ ./console.py
-(hbnb) create BaseModel
-119be863-6fe5-437e-a180-b9892e8746b8
-(hbnb)
-(hbnb) create State name="California"
-(hbnb) quit
-$ cat file.json ; echo ""
-{"BaseModel.119be863-6fe5-437e-a180-b9892e8746b8": {"updated_at": "2019-02-17T2
-1:30:42.215277", "created_at": "2019-02-17T21:30:42.215277", "__class__": "Base
-Model", "id": "119be863-6fe5-437e-a180-b9892e8746b8"}, {'id': 'd80e0344-63eb-43
-4a-b1e0-07783522124e', 'created_at': datetime.datetime(2017, 11, 10, 4, 41, 7, 
-842160), 'updated_at': datetime.datetime(2017, 11, 10, 4, 41, 7, 842235), 'name
-': 'California'}}
-```
-
-#### show
-* Usage: `show <class> <id>` or `<class>.show(<id>)`
-
-Prints the string representation of a class instance based on a given id.
-
-```
-$ ./console.py
-(hbnb) create User
-1e32232d-5a63-4d92-8092-ac3240b29f46
-(hbnb)
-(hbnb) show User 1e32232d-5a63-4d92-8092-ac3240b29f46
-[User] (1e32232d-5a63-4d92-8092-ac3240b29f46) {'id': '1e32232d-5a63-4d92-8092-a
-c3240b29f46', 'created_at': datetime.datetime(2019, 2, 17, 21, 34, 3, 635828), 
-'updated_at': datetime.datetime(2019, 2, 17, 21, 34, 3, 635828)}
-(hbnb)
-(hbnb) User.show(1e32232d-5a63-4d92-8092-ac3240b29f46)
-[User] (1e32232d-5a63-4d92-8092-ac3240b29f46) {'id': '1e32232d-5a63-4d92-8092-a
-c3240b29f46', 'created_at': datetime.datetime(2019, 2, 17, 21, 34, 3, 635828), 
-'updated_at': datetime.datetime(2019, 2, 17, 21, 34, 3, 635828)}
-(hbnb)
-```
-
-#### destroy
-* Usage: `destroy <class> <id>` or `<class>.destroy(<id>)`
-
-Deletes a class instance based on a given id.
-
-```
-$ ./console.py
-(hbnb) create State
-d2d789cd-7427-4920-aaae-88cbcf8bffe2
-(hbnb) create Place
-3e-8329-4f47-9947-dca80c03d3ed
-(hbnb)
-(hbnb) destroy State d2d789cd-7427-4920-aaae-88cbcf8bffe2
-(hbnb) Place.destroy(03486a3e-8329-4f47-9947-dca80c03d3ed)
-(hbnb) quit
-$ cat file.json ; echo ""
-{}
-```
-
-#### all
-* Usage: `all` or `all <class>` or `<class>.all()`
-
-Prints the string representations of all instances of a given class. If no
-class name is provided, the command prints all instances of every class.
-
-```
-$ ./console.py
-(hbnb) create BaseModel
-fce2124c-8537-489b-956e-22da455cbee8
-(hbnb) create BaseModel
-450490fd-344e-47cf-8342-126244c2ba99
-(hbnb) create User
-b742dbc3-f4bf-425e-b1d4-165f52c6ff81
-(hbnb) create User
-8f2d75c8-fb82-48e1-8ae5-2544c909a9fe
-(hbnb)
-(hbnb) all BaseModel
-["[BaseModel] (450490fd-344e-47cf-8342-126244c2ba99) {'updated_at': datetime.da
-tetime(2019, 2, 17, 21, 45, 5, 963516), 'created_at': datetime.datetime(2019, 2
-, 17, 21, 45, 5, 963516), 'id': '450490fd-344e-47cf-8342-126244c2ba99'}", "[Bas
-eModel] (fce2124c-8537-489b-956e-22da455cbee8) {'updated_at': datetime.datetime
-(2019, 2, 17, 21, 43, 56, 899348), 'created_at': datetime.datetime(2019, 2, 17,
-21, 43, 56, 899348), 'id': 'fce2124c-8537-489b-956e-22da455cbee8'}"]
-(hbnb)
-(hbnb) User.all()
-["[User] (8f2d75c8-fb82-48e1-8ae5-2544c909a9fe) {'updated_at': datetime.datetim
-e(2019, 2, 17, 21, 44, 44, 428413), 'created_at': datetime.datetime(2019, 2, 17
-, 21, 44, 44, 428413), 'id': '8f2d75c8-fb82-48e1-8ae5-2544c909a9fe'}", "[User] 
-(b742dbc3-f4bf-425e-b1d4-165f52c6ff81) {'updated_at': datetime.datetime(2019, 2
-, 17, 21, 44, 15, 974608), 'created_at': datetime.datetime(2019, 2, 17, 21, 44,
-15, 974608), 'id': 'b742dbc3-f4bf-425e-b1d4-165f52c6ff81'}"]
-(hbnb)
-(hbnb) all
-["[User] (8f2d75c8-fb82-48e1-8ae5-2544c909a9fe) {'updated_at': datetime.datetim
-e(2019, 2, 17, 21, 44, 44, 428413), 'created_at': datetime.datetime(2019, 2, 17
-, 21, 44, 44, 428413), 'id': '8f2d75c8-fb82-48e1-8ae5-2544c909a9fe'}", "[BaseMo
-del] (450490fd-344e-47cf-8342-126244c2ba99) {'updated_at': datetime.datetime(20
-19, 2, 17, 21, 45, 5, 963516), 'created_at': datetime.datetime(2019, 2, 17, 21,
-45, 5, 963516), 'id': '450490fd-344e-47cf-8342-126244c2ba99'}", "[User] (b742db
-c3-f4bf-425e-b1d4-165f52c6ff81) {'updated_at': datetime.datetime(2019, 2, 17, 2
-1, 44, 15, 974608), 'created_at': datetime.datetime(2019, 2, 17, 21, 44, 15, 97
-4608), 'id': 'b742dbc3-f4bf-425e-b1d4-165f52c6ff81'}", "[BaseModel] (fce2124c-8
-537-489b-956e-22da455cbee8) {'updated_at': datetime.datetime(2019, 2, 17, 21, 4
-3, 56, 899348), 'created_at': datetime.datetime(2019, 2, 17, 21, 43, 56, 899348
-), 'id': 'fce2124c-8537-489b-956e-22da455cbee8'}"]
-(hbnb)
-```
-
-#### count
-* Usage: `count <class>` or `<class>.count()`
-
-Retrieves the number of instances of a given class.
-
-```
-$ ./console.py
-(hbnb) create Place
-12c73223-f3d3-4dec-9629-bd19c8fadd8a
-(hbnb) create Place
-aa229cbb-5b19-4c32-8562-f90a3437d301
-(hbnb) create City
-22a51611-17bd-4d8f-ba1b-3bf07d327208
-(hbnb)
-(hbnb) count Place
-2
-(hbnb) city.count()
-1
-(hbnb)
-```
-
-#### update
-* Usage: `update <class> <id> <attribute name> "<attribute value>"`
-
-Updates a class instance based on a given id with a given key/value attribute
-pair or dictionary of attribute pairs. If `update` is called with a single
-key/value attribute pair, only "simple" attributes can be updated (ie. not
-`id`, `created_at`, and `updated_at`).
-
-```
-$ ./console.py
-(hbnb) create User
-6f348019-0499-420f-8eec-ef0fdc863c02
-(hbnb)
-(hbnb) update User 6f348019-0499-420f-8eec-ef0fdc863c02 first_name "Holberton" 
-(hbnb) show User 6f348019-0499-420f-8eec-ef0fdc863c02
-[User] (6f348019-0499-420f-8eec-ef0fdc863c02) {'created_at': datetime.datetime(
-2019, 2, 17, 21, 54, 39, 234382), 'first_name': 'Holberton', 'updated_at': date
-time.datetime(2019, 2, 17, 21, 54, 39, 234382), 'id': '6f348019-0499-420f-8eec-
-ef0fdc863c02'}
-(hbnb)
-```
-
-## Testing :straight_ruler:
-
-Unittests for the HolbertonBnB project are defined in the [tests](./tests)
-folder. To run the entire test suite simultaneously, execute the following command:
-
-```
-$ python3 unittest -m discover tests
-```
-
-Alternatively, you can specify a single test file to run at a time:
-
-```
-$ python3 unittest -m tests/test_console.py
-```
-
-## Authors :black_nib:
-* **Brennan D Baraban** <[bdbaraban](https://github.com/bdbaraban)>
-* **Samie Azad** <[sazad44](https://github.com/sazad44)>
-* **Andrew Lindburg** <[atlindburg](https://github.com/atlindburg)>
-* **Kevin Yook** <[yook00627](https://github.com/yook00627)>
-* **Miranda Evans** <miranda.r.evans@gmail.com>
+**hbnb** is open source and free to download and use
