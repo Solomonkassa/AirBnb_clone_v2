@@ -20,7 +20,7 @@ def do_deploy(archive_path):
         run("tar -zxf /tmp/{} -C /data/web_static/releases/{}/"
             .format(archive_wo_ver, archive_wo_ext_ver))
         run("rm -r /tmp/{}".format(archive_wo_ver))
-        run("mv /data/web_static/releases/{}/web_static/*\
+        run("mv /data/web_static/releases/{}/web_static/* \
         /data/web_static/releases/{}/".format(archive_wo_ext_ver,
                                               archive_wo_ext_ver))
         run("rm -rf /data/web_static/releases/{}/web_static".
@@ -36,12 +36,12 @@ def do_deploy(archive_path):
 
 def do_pack():
     try:
-        filepath = "versions/web_static_" + datetime.now().\
-                   strftime("%Y%m%d%H%M%S") + ".tgz"
+        now = datetime.now().strftime("%Y%m%d%H%M%S")
+        filepath = "versions/web_static_{}.tgz".format(now)
         local("mkdir -p versions")
-        local("tar -zcvf versions/web_static_$(date +%Y%m%d%H%M%S).tgz\
-        web_static")
+        local("tar -zcvf {} web_static".format(filepath))
         print("web_static packed: {} -> {}".
               format(filepath, os.path.getsize(filepath)))
+        return filepath
     except:
         return None
