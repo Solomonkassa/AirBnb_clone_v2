@@ -3,7 +3,8 @@ from fabric.api import *
 import os
 from datetime import datetime
 
-env.hosts = ['54.237.117.138', '100.26.216.97']
+env.user = 'ubuntu'
+env.hosts = ['54.89.194.139', '100.26.216.97']
 
 
 def deploy():
@@ -46,10 +47,10 @@ def do_pack():
         filepath = "versions/web_static_" + datetime.now().\
                    strftime("%Y%m%d%H%M%S") + ".tgz"
         local("mkdir -p versions")
-        local("tar -zcvf versions/web_static_$(date +%Y%m%d%H%M%S).tgz\
-        web_static")
+        local("tar -zcvf {} web_static".format(filepath))
         print("web_static packed: {} -> {}".
               format(filepath, os.path.getsize(filepath)))
         return filepath
     except:
         return None
+
