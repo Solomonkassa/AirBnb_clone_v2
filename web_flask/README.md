@@ -20,27 +20,27 @@ AirBnB Web Flask is a fantastic web application built using the Flask framework,
 
 ## Installation
 
-1. # Clone the repository:
+## 1.  Clone the repository:
    ```bash
    git clone https://github.com/solomonkassa/AirBnB-Web-Flask.git
    ```
-2. # Navigate to the project directory:
+## 2. Navigate to the project directory:
 
   ```
   cd AirBnB-Web-Flask
   ```
-3. # Set up a virtual environment (optional but recommended):
+## 3. Set up a virtual environment (optional but recommended):
 
   ```
   python -m venv venv
   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
   ```
-4. # Install the required dependencies:
+## 4. Install the required dependencies:
 
   ```
   pip install -r requirements.txt
   ```
-5. # Run the application:
+## 5. Run the application:
 
   ```
   python app.py
@@ -53,13 +53,14 @@ AirBnB Web Flask is a fantastic web application built using the Flask framework,
 * SQLite (Database)
 * Jinja2 (Template Engine)
   
-# Author
+## Author
   This project was developed with passion and dedication by Solomon Kassa.
 
   GitHub: [solomonkassa](https://github.com/Solomonkassa/)
   
-# Acknowledgments
+## Acknowledgments
   Special thanks to all contributors and open-source projects that inspired and supported the development of this web application.
+## License
 
-# License
- This project is licensed under the MIT License. Feel free to use, modify, and distribute the code as per the terms of the license.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). Feel free to use, modify, and distribute the code as per the terms of the license.
+
